@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Audio Player -->
+  <audio id="bg-music" src="birthday.mp3" loop></audio>
+  <button class="music-toggle" id="btn-music" aria-label="Toggle Music">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+    </svg>
+  </button>
+
+  <!-- Interactive Particles Canvas -->
+  <canvas id="global-canvas"></canvas>
+
+  <!-- Decorative Corner Stickers (SVG) -->
+  <div class="decorations-container">
+    <!-- Top Left Flower -->
+    <svg class="sticker top-left" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="15" fill="#ffd3b6" />
+      <circle cx="50" cy="25" r="14" fill="#ffaaa5" />
+      <circle cx="71" cy="35" r="14" fill="#ffaaa5" />
+      <circle cx="71" cy="65" r="14" fill="#ffaaa5" />
+      <circle cx="50" cy="75" r="14" fill="#ffaaa5" />
+      <circle cx="29" cy="65" r="14" fill="#ffaaa5" />
+      <circle cx="29" cy="35" r="14" fill="#ffaaa5" />
+    </svg>
+
+    <!-- Top Right Sparkle/Heart -->
+    <svg class="sticker top-right" viewBox="0 0 100 100">
+      <path d="M12,48 C10,30 25,15 45,30 C65,15 80,30 78,48 C74,70 45,90 45,90 C45,90 16,70 12,48 Z" fill="#ff8b94" />
+      <path d="M25,40 C24,32 30,25 38,31 C46,25 52,32 51,40 C49,49 38,57 38,57 C38,57 27,49 25,40 Z" fill="#ffb3ba" />
+    </svg>
+
+    <!-- Bottom Left Cat Sticker -->
+    <svg class="sticker bottom-left" viewBox="0 0 100 100">
+      <!-- Ears -->
+      <polygon points="25,45 20,20 40,35" fill="#ffcad4" />
+      <polygon points="25,45 22,25 35,37" fill="#ff8b94" />
+      <polygon points="75,45 80,20 60,35" fill="#ffcad4" />
+      <polygon points="75,45 78,25 65,37" fill="#ff8b94" />
+      <!-- Head -->
+      <ellipse cx="50" cy="55" rx="30" ry="24" fill="#ffcad4" />
+      <!-- Cheeks -->
+      <circle cx="32" cy="58" r="5" fill="#ff8b94" opacity="0.6" />
+      <circle cx="68" cy="58" r="5" fill="#ff8b94" opacity="0.6" />
+      <!-- Eyes -->
+      <circle cx="40" cy="50" r="3" fill="#2f3e46" />
+      <circle cx="60" cy="50" r="3" fill="#2f3e46" />
+      <!-- Nose/Mouth -->
+      <path d="M 48,56 Q 50,58 52,56" stroke="#2f3e46" stroke-width="2" fill="none" />
+      <path d="M 46,55 Q 48,57 50,55" stroke="#2f3e46" stroke-width="2" fill="none" />
+      <!-- Bow -->
+      <path d="M 50,75 L 42,70 L 42,80 Z" fill="#ff8b94" />
+      <path d="M 50,75 L 58,70 L 58,80 Z" fill="#ff8b94" />
+      <circle cx="50" cy="75" r="3" fill="#ffcad4" />
+    </svg>
+
+    <!-- Bottom Right Ribbon/Heart -->
+    <svg class="sticker bottom-right" viewBox="0 0 100 100">
+      <!-- Ribbon bow -->
+      <path d="M35,45 C25,25 45,15 50,40 C55,15 75,25 65,45 C58,52 50,55 50,55 C50,55 42,52 35,45 Z" fill="#b5ead7" />
+      <path d="M50,50 L40,85 L50,75 L60,85 Z" fill="#b5ead7" />
+      <circle cx="50" cy="48" r="6" fill="#c7ceea" />
+    </svg>
+  </div>
+
+
+  <!-- 1. LOADING SCREEN -->
+  <div class="screen active" id="screen-loading">
+    <div class="loader-container">
+      <!-- Cute Cake Loader -->
+      <svg class="loader-cake" viewBox="0 0 100 100">
+        <!-- Cake Base -->
+        <rect x="25" y="55" width="50" height="25" rx="5" fill="#ffb8c6" />
+        <rect x="20" y="75" width="60" height="8" rx="2" fill="#ff6b81" />
+        <!-- Drips -->
+        <path d="M 25,55 Q 30,62 35,55 Q 40,62 45,55 Q 50,62 55,55 Q 60,62 65,55 Q 70,62 75,55 L 75,60 Q 70,65 65,60 Q 60,65 55,60 Q 50,65 45,60 Q 40,65 35,60 Q 30,65 25,60 Z" fill="#faf8f5" />
+        <!-- Candles -->
+        <rect x="47" y="32" width="6" height="23" fill="#b5ead7" />
+        <path d="M 50,22 C 48,22 45,26 50,32 C 55,26 52,22 50,22 Z" fill="#ffb3ba" class="flame" />
+      </svg>
+      <div class="loader-text">L O A D I N G ...</div>
+    </div>
+  </div>
+
+
+  <!-- 2. PASSWORD SCREEN -->
+  <div class="screen" id="screen-password">
+    <div class="password-card">
+      
+      <!-- Polaroid Frame (Left) -->
+      <div class="polaroid-wrapper">
+        <div class="polaroid-frame">
+          <!-- Flower on Polaroid -->
+          <svg class="polaroid-flower" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="15" fill="#fcd1d1" />
+            <path d="M 50,50 C 40,30 60,30 50,50 C 70,40 70,60 50,50 C 60,70 40,70 50,50 C 30,60 30,40 50,50 Z" fill="#ff6b81" />
+          </svg>
+          
+          <img src="couple.png" alt="Sweet Couple" class="polaroid-photo">
+          <div class="polaroid-caption">With love</div>
+          
+          <!-- Bow Ribbon on Polaroid -->
+          <svg class="polaroid-ribbon" viewBox="0 0 100 100">
+            <path d="M20,50 C5,30 35,20 45,45 C55,20 85,30 70,50 C60,57 50,60 50,60 Z" fill="#ff4757" />
+            <path d="M50,55 L35,90 L50,80 L65,90 Z" fill="#ff4757" />
+            <circle cx="50" cy="52" r="7" fill="#ffb8c6" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Numeric Keypad (Right) -->
+      <div class="keypad-wrapper">
+        <div class="keypad-header">Enter a passcode</div>
+        
+        <!-- Code Indicators -->
+        <div class="passcode-indicators" id="indicators-container">
+          <div class="indicator" data-index="0"></div>
+          <div class="indicator" data-index="1"></div>
+          <div class="indicator" data-index="2"></div>
+          <div class="indicator" data-index="3"></div>
+        </div>
+
+        <!-- Keypad Grid -->
+        <div class="keypad-grid" id="keypad">
+          <button class="keypad-btn">1</button>
+          <button class="keypad-btn">2</button>
+          <button class="keypad-btn">3</button>
+          <button class="keypad-btn">4</button>
+          <button class="keypad-btn">5</button>
+          <button class="keypad-btn">6</button>
+          <button class="keypad-btn">7</button>
+          <button class="keypad-btn">8</button>
+          <button class="keypad-btn">9</button>
+          <button class="keypad-btn zero">0</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- 3. BIRTHDAY WELCOME SCREEN -->
+  <div class="screen" id="screen-welcome">
+    <div class="welcome-card">
+      <h1 class="welcome-title">
+        <span>H</span><span>A</span><span>P</span><span>P</span><span>Y</span>
+        <br>
+        <span>B</span><span>I</span><span>R</span><span>T</span><span>H</span><span>D</span><span>A</span><span>Y</span>
+      </h1>
+
+      <!-- Cute Character Group (SVG Illustration) -->
+      <svg class="welcome-illustration character-group" viewBox="0 0 200 150">
+        <!-- Background Banner -->
+        <path d="M 20,25 L 180,25" stroke="#ffb8c6" stroke-width="4" stroke-dasharray="10, 5" fill="none" />
+        <!-- Hanging Triangles -->
+        <polygon points="30,25 45,25 37.5,40" fill="#ffb3ba" />
+        <polygon points="55,25 70,25 62.5,40" fill="#bffcc6" />
+        <polygon points="80,25 95,25 87.5,40" fill="#ffc6ff" />
+        <polygon points="105,25 120,25 112.5,40" fill="#c7ceea" />
+        <polygon points="130,25 145,25 137.5,40" fill="#ffdac1" />
+        <polygon points="155,25 170,25 162.5,40" fill="#e8dff5" />
+
+        <!-- Brown Bear (Middle) -->
+        <g id="character-brown">
+          <!-- Ears -->
+          <circle cx="85" cy="70" r="10" fill="#8e5d3f" />
+          <circle cx="85" cy="70" r="6" fill="#ffcad4" />
+          <circle cx="115" cy="70" r="10" fill="#8e5d3f" />
+          <circle cx="115" cy="70" r="6" fill="#ffcad4" />
+          <!-- Head -->
+          <circle cx="100" cy="85" r="20" fill="#8e5d3f" />
+          <!-- Snout -->
+          <ellipse cx="100" cy="91" rx="7" ry="5" fill="#faf8f5" />
+          <polygon points="98,89 102,89 100,91" fill="#2f3e46" />
+          <!-- Eyes -->
+          <circle cx="93" cy="82" r="2.5" fill="#2f3e46" />
+          <circle cx="107" cy="82" r="2.5" fill="#2f3e46" />
+          <!-- Body -->
+          <path d="M 85,103 C 85,103 80,135 100,135 C 120,135 115,103 115,103 Z" fill="#8e5d3f" />
+          <!-- Hands holding cake -->
+          <circle cx="90" cy="108" r="4.5" fill="#8e5d3f" />
+          <circle cx="110" cy="108" r="4.5" fill="#8e5d3f" />
+        </g>
+
+        <!-- Cony Bunny (Right) -->
+        <g id="character-cony">
+          <!-- Ears -->
+          <ellipse cx="123" cy="65" rx="5" ry="15" fill="#ffffff" transform="rotate(-15 123 65)" />
+          <ellipse cx="123" cy="65" rx="2.5" ry="10" fill="#ffcad4" transform="rotate(-15 123 65)" />
+          <ellipse cx="137" cy="67" rx="5" ry="15" fill="#ffffff" transform="rotate(15 137 67)" />
+          <ellipse cx="137" cy="67" rx="2.5" ry="10" fill="#ffcad4" transform="rotate(15 137 67)" />
+          <!-- Head -->
+          <circle cx="130" cy="85" r="15" fill="#ffffff" />
+          <!-- Eyes & Cheeks -->
+          <circle cx="124" cy="83" r="2" fill="#2f3e46" />
+          <circle cx="136" cy="83" r="2" fill="#2f3e46" />
+          <circle cx="122" cy="87" r="2" fill="#ff8b94" opacity="0.6" />
+          <circle cx="138" cy="87" r="2" fill="#ff8b94" opacity="0.6" />
+          <path d="M 129,87 L 131,87 L 130,88" stroke="#2f3e46" stroke-width="1" fill="none" />
+          <!-- Body -->
+          <path d="M 118,98 C 118,98 115,128 130,128 C 145,128 142,98 142,98 Z" fill="#ffffff" />
+        </g>
+
+        <!-- Choco Bear (Left) -->
+        <g id="character-choco">
+          <!-- Ears -->
+          <circle cx="55" cy="74" r="9" fill="#ab7a5e" />
+          <circle cx="55" cy="74" r="5" fill="#ffcad4" />
+          <circle cx="81" cy="74" r="9" fill="#ab7a5e" />
+          <circle cx="81" cy="74" r="5" fill="#ffcad4" />
+          <!-- Head -->
+          <circle cx="68" cy="88" r="18" fill="#ab7a5e" />
+          <!-- Hair Bow -->
+          <path d="M 68,74 L 60,70 L 60,78 Z" fill="#ff6b81" />
+          <path d="M 68,74 L 76,70 L 76,78 Z" fill="#ff6b81" />
+          <circle cx="68" cy="74" r="3" fill="#ffffff" />
+          <!-- Eyes & Snout -->
+          <circle cx="62" cy="86" r="2" fill="#2f3e46" />
+          <circle cx="74" cy="86" r="2" fill="#2f3e46" />
+          <ellipse cx="68" cy="92" rx="5" ry="3.5" fill="#faf8f5" />
+          <!-- Body -->
+          <path d="M 55,103 C 55,103 50,130 68,130 C 86,130 81,103 81,103 Z" fill="#ab7a5e" />
+        </g>
+
+        <!-- Birthday Cake in front -->
+        <g id="mini-cake">
+          <rect x="85" y="112" width="30" height="15" rx="3" fill="#ffdac1" />
+          <path d="M 85,112 Q 90,116 95,112 Q 100,116 105,112 Q 110,116 115,112 L 115,115 Q 110,118 105,115 Q 100,118 95,115 Q 90,118 85,115 Z" fill="#ff6b81" />
+          <rect x="98" y="103" width="4" height="9" fill="#bffcc6" />
+          <path d="M 100,97 C 99,97 98,99 100,103 C 102,103 101,97 100,97 Z" fill="#ff4757" />
+        </g>
+      </svg>
+
+      <p class="welcome-text">Wishing you a day filled with laughter, cute surprises, and endless happiness!</p>
+      
+      <button class="btn-next" id="btn-to-wish">
+        Next
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- 4. MAKE A WISH SCREEN -->
+  <div class="screen" id="screen-wish">
+    <div class="wish-container">
+      <h1 class="wish-title">make a wish</h1>
+
+      <!-- Large Birthday Cake (SVG) -->
+      <div class="cake-wrapper">
+        <svg class="cake-svg" viewBox="0 0 300 280">
+          <!-- Stand -->
+          <ellipse cx="150" cy="245" rx="90" ry="12" fill="#ffccd5" />
+          <path d="M120,245 L115,265 L185,265 L180,245 Z" fill="#ffb3ba" />
+          <ellipse cx="150" cy="265" rx="40" ry="8" fill="#ff8b94" />
+
+          <!-- Bottom Tier -->
+          <path d="M 70,175 L 230,175 A 80 18 0 0 1 70,175 Z" fill="#b2ebf2" />
+          <rect x="70" y="175" width="160" height="60" fill="#80deea" />
+          <ellipse cx="150" cy="235" rx="80" ry="16" fill="#80deea" />
+          
+          <!-- Bottom Tier Drips -->
+          <path d="M 70,175 Q 80,188 90,175 Q 100,188 110,175 Q 120,188 130,175 Q 140,188 150,175 Q 160,188 170,175 Q 180,188 190,175 Q 200,188 210,175 Q 220,188 230,175 L 230,190 Q 220,198 210,190 Q 200,198 190,190 Q 180,198 170,190 Q 160,198 150,190 Q 140,198 130,190 Q 120,198 110,190 Q 100,198 90,190 Q 80,198 70,190 Z" fill="#ffffff" />
+          <ellipse cx="150" cy="175" rx="80" ry="12" fill="#ffffff" />
+
+          <!-- Top Tier -->
+          <path d="M 95,115 L 205,115 A 55 12 0 0 1 95,115 Z" fill="#e0f7fa" />
+          <rect x="95" y="115" width="110" height="50" fill="#b2ebf2" />
+          <ellipse cx="150" cy="165" rx="55" ry="11" fill="#b2ebf2" />
+
+          <!-- Top Tier Drips -->
+          <path d="M 95,115 Q 102,125 110,115 Q 118,125 126,115 Q 134,125 142,115 Q 150,125 158,115 Q 166,125 174,115 Q 182,125 190,115 Q 198,125 205,115 L 205,127 Q 198,133 190,127 Q 182,133 174,127 Q 166,133 158,127 Q 150,133 142,127 Q 134,133 126,127 Q 118,133 110,127 Q 102,133 95,127 Z" fill="#ffffff" />
+          <ellipse cx="150" cy="115" rx="55" ry="8" fill="#ffffff" />
+
+          <!-- 7 Candles with Glowing Flames -->
+          <!-- Candle 1 -->
+          <rect x="105" y="85" width="6" height="30" fill="#ffb3ba" rx="2" />
+          <path class="flame" id="flame-1" d="M 108,68 C 105,68 102,74 108,84 C 114,74 111,68 108,68 Z" fill="#ff9f43" />
+          <!-- Candle 2 -->
+          <rect x="120" y="81" width="6" height="30" fill="#ffdac1" rx="2" />
+          <path class="flame" id="flame-2" d="M 123,64 C 120,64 117,70 123,80 C 129,70 126,64 123,64 Z" fill="#ff9f43" />
+          <!-- Candle 3 -->
+          <rect x="135" y="78" width="6" height="30" fill="#fff9a6" rx="2" />
+          <path class="flame" id="flame-3" d="M 138,61 C 135,61 132,67 138,77 C 144,67 141,61 138,61 Z" fill="#ff9f43" />
+          <!-- Candle 4 -->
+          <rect x="147" y="76" width="6" height="32" fill="#bffcc6" rx="2" />
+          <path class="flame" id="flame-4" d="M 150,57 C 147,57 144,63 150,74 C 156,63 153,57 150,57 Z" fill="#ff9f43" />
+          <!-- Candle 5 -->
+          <rect x="160" y="78" width="6" height="30" fill="#c7ceea" rx="2" />
+          <path class="flame" id="flame-5" d="M 163,61 C 160,61 157,67 163,77 C 169,67 166,61 163,61 Z" fill="#ff9f43" />
+          <!-- Candle 6 -->
+          <rect x="175" y="81" width="6" height="30" fill="#ffc6ff" rx="2" />
+          <path class="flame" id="flame-6" d="M 178,64 C 175,64 172,70 178,80 C 184,70 181,64 178,64 Z" fill="#ff9f43" />
+          <!-- Candle 7 -->
+          <rect x="190" y="85" width="6" height="30" fill="#ffb8c6" rx="2" />
+          <path class="flame" id="flame-7" d="M 193,68 C 190,68 187,74 193,84 C 199,74 196,68 193,68 Z" fill="#ff9f43" />
+        </svg>
+
+        <!-- Smoke Particles Placeholders (dynamically positioned by JS) -->
+        <div class="candle-smoke" id="smoke-1" style="left: 108px; top: 68px;"></div>
+        <div class="candle-smoke" id="smoke-2" style="left: 123px; top: 64px;"></div>
+        <div class="candle-smoke" id="smoke-3" style="left: 138px; top: 61px;"></div>
+        <div class="candle-smoke" id="smoke-4" style="left: 150px; top: 57px;"></div>
+        <div class="candle-smoke" id="smoke-5" style="left: 163px; top: 61px;"></div>
+        <div class="candle-smoke" id="smoke-6" style="left: 178px; top: 64px;"></div>
+        <div class="candle-smoke" id="smoke-7" style="left: 193px; top: 68px;"></div>
+      </div>
+
+      <button class="btn-blow" id="btn-blow">blow</button>
+    </div>
+  </div>
+
+
+  <!-- 5. GIFT SURPRISE SCREEN -->
+  <div class="screen" id="screen-gifts">
+    <div class="gifts-container">
+      <h1 class="gifts-title">GIFT FOR YOU</h1>
+      <p class="gifts-subtitle">Click any gift to open</p>
+
+      <div class="gifts-grid">
+        <!-- Gift 1 -->
+        <div class="gift-box-wrapper" id="gift-1" data-target="overlay-msg">
+          <svg class="gift-box-svg" viewBox="0 0 100 100">
+            <!-- Box Body -->
+            <rect x="15" y="40" width="70" height="50" rx="6" fill="#ffb8c6" />
+            <!-- Vertical Ribbon -->
+            <rect x="44" y="40" width="12" height="50" fill="#ff4757" />
+            <!-- Horizontal Ribbon -->
+            <rect x="15" y="58" width="70" height="12" fill="#ff4757" />
+            <!-- Lid -->
+            <g class="gift-lid">
+              <rect x="10" y="28" width="80" height="15" rx="3" fill="#ffcad4" />
+              <rect x="44" y="28" width="12" height="15" fill="#ff4757" />
+              <!-- Bow Loops -->
+              <path d="M50,28 C35,10 48,5 50,28 C52,5 65,10 50,28 Z" fill="#ff4757" />
+            </g>
+          </svg>
+          <div class="gift-label">message</div>
+        </div>
+
+        <!-- Gift 2 -->
+        <div class="gift-box-wrapper" id="gift-2" data-target="overlay-gallery">
+          <svg class="gift-box-svg" viewBox="0 0 100 100">
+            <!-- Box Body -->
+            <rect x="15" y="40" width="70" height="50" rx="6" fill="#ffcad4" />
+            <!-- Vertical Ribbon -->
+            <rect x="44" y="40" width="12" height="50" fill="#ff6b81" />
+            <!-- Horizontal Ribbon -->
+            <rect x="15" y="58" width="70" height="12" fill="#ff6b81" />
+            <!-- Lid -->
+            <g class="gift-lid">
+              <rect x="10" y="28" width="80" height="15" rx="3" fill="#ffe5ec" />
+              <rect x="44" y="28" width="12" height="15" fill="#ff6b81" />
+              <!-- Bow Loops -->
+              <path d="M50,28 C35,10 48,5 50,28 C52,5 65,10 50,28 Z" fill="#ff6b81" />
+            </g>
+          </svg>
+          <div class="gift-label">gallery</div>
+        </div>
+
+        <!-- Gift 3 -->
+        <div class="gift-box-wrapper" id="gift-3" data-target="overlay-letter">
+          <svg class="gift-box-svg" viewBox="0 0 100 100">
+            <!-- Box Body -->
+            <rect x="15" y="40" width="70" height="50" rx="6" fill="#ffccd5" />
+            <!-- Vertical Ribbon -->
+            <rect x="44" y="40" width="12" height="50" fill="#ff4081" />
+            <!-- Horizontal Ribbon -->
+            <rect x="15" y="58" width="70" height="12" fill="#ff4081" />
+            <!-- Lid -->
+            <g class="gift-lid">
+              <rect x="10" y="28" width="80" height="15" rx="3" fill="#ffebf0" />
+              <rect x="44" y="28" width="12" height="15" fill="#ff4081" />
+              <!-- Bow Loops -->
+              <path d="M50,28 C35,10 48,5 50,28 C52,5 65,10 50,28 Z" fill="#ff4081" />
+            </g>
+          </svg>
+          <div class="gift-label">love note</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- --- OVERLAY 1: SWEET MESSAGE --- -->
+  <div class="gift-overlay" id="overlay-msg">
+    <div class="overlay-card">
+      <div class="overlay-header">a message for u</div>
+      <div class="overlay-content">
+        
+        <div class="envelope-container">
+          <div class="envelope-wrapper" id="sweet-envelope">
+            <!-- Back of Envelope -->
+            <svg class="envelope-svg" viewBox="0 0 200 130">
+              <rect x="5" y="5" width="190" height="120" rx="10" fill="#ffcad4" stroke="#ff8b94" stroke-width="2" />
+              <path d="M 5,5 L 100,75 L 195,5" fill="none" stroke="#ff8b94" stroke-width="3" />
+              <path d="M 5,125 L 75,70" fill="none" stroke="#ff8b94" stroke-width="2" />
+              <path d="M 195,125 L 125,70" fill="none" stroke="#ff8b94" stroke-width="2" />
+            </svg>
+            
+            <!-- Letter popping out -->
+            <div class="letter-pop">
+              <div class="letter-text">
+                To the sweetest person,<br><br>
+                Happy Birthday! 🌸<br>
+                You bring so much joy into my life.<br>
+                Hope your day is as lovely and sweet as you are!
+              </div>
+            </div>
+
+            <!-- Heart Sticker seal -->
+            <svg class="envelope-heart" viewBox="0 0 100 100">
+              <path d="M 12,40 C 10,20 25,5 45,20 C 65,5 80,20 78,40 C 74,62 45,82 45,82 C 45,82 16,62 12,40 Z" fill="#ff4757" />
+            </svg>
+          </div>
+          <p style="margin-top:20px; font-family:var(--font-bubble); color:#ff6b81; font-size:16px;">(Click envelope to open!)</p>
+        </div>
+
+      </div>
+      <button class="btn-back">back</button>
+    </div>
+  </div>
+
+
+  <!-- --- OVERLAY 2: PHOTO GALLERY --- -->
+  <div class="gift-overlay" id="overlay-gallery">
+    <div class="overlay-card">
+      <div class="overlay-header">our memory book</div>
+      <div class="overlay-content">
+        
+        <div class="scrapbook-layout">
+          <!-- Hanging Polaroid Collages -->
+          <div class="collage-row">
+            <!-- Photo 1 (Couple Photo) -->
+            <div class="hanging-polaroid">
+              <!-- Clip -->
+              <svg class="clip-svg" viewBox="0 0 50 100">
+                <path d="M 25,90 L 25,30 C 25,10 10,10 10,30 L 10,70 C 10,80 20,80 20,70 L 20,40" stroke="#7f8c8d" stroke-width="6" fill="none" stroke-linecap="round" />
+              </svg>
+              <img src="couple.png" alt="Memory 1" class="hanging-photo">
+            </div>
+
+            <!-- Photo 2 (Cat Photo) -->
+            <div class="hanging-polaroid">
+              <!-- Clip -->
+              <svg class="clip-svg" viewBox="0 0 50 100">
+                <path d="M 25,90 L 25,30 C 25,10 10,10 10,30 L 10,70 C 10,80 20,80 20,70 L 20,40" stroke="#7f8c8d" stroke-width="6" fill="none" stroke-linecap="round" />
+              </svg>
+              <img src="cat.png" alt="Memory 2" class="hanging-photo">
+            </div>
+
+            <!-- Photo 3 (Couple 2 Photo) -->
+            <div class="hanging-polaroid">
+              <!-- Clip -->
+              <svg class="clip-svg" viewBox="0 0 50 100">
+                <path d="M 25,90 L 25,30 C 25,10 10,10 10,30 L 10,70 C 10,80 20,80 20,70 L 20,40" stroke="#7f8c8d" stroke-width="6" fill="none" stroke-linecap="round" />
+              </svg>
+              <img src="couple2.png" alt="Memory 3" class="hanging-photo">
+            </div>
+          </div>
+
+          <!-- Scrapbook Note -->
+          <div class="scrapbook-note">
+            <p><strong>Captured Moments:</strong></p>
+            <p>Every picture tells a story of a beautiful day spent together. From the silly laughs to the warm hugs, I cherish every single memory we've made.</p>
+          </div>
+        </div>
+
+      </div>
+      <button class="btn-back">back</button>
+    </div>
+  </div>
+
+
+  <!-- --- OVERLAY 3: SURPRISE LOVE NOTE --- -->
+  <div class="gift-overlay" id="overlay-letter">
+    <div class="overlay-card">
+      <div class="overlay-header">a special note</div>
+      <div class="overlay-content">
+        
+        <div class="love-letter-envelope">
+          <div class="love-letter-paper">
+            for u ♥<br><br>
+            I'm so in love with you.<br>
+            I don't understand it.<br>
+            I've never felt this good<br>
+            about anything or anyone.<br><br>
+            Thank you for being you,<br>
+            for bringing sunshine to my darkest days,<br>
+            and for making me smile so easily.<br><br>
+            Happy Birthday, my love! ✨
+            
+            <!-- Pulsing Heart -->
+            <svg class="love-letter-heart" viewBox="0 0 100 100">
+              <path d="M 12,40 C 10,20 25,5 45,20 C 65,5 80,20 78,40 C 74,62 45,82 45,82 C 45,82 16,62 12,40 Z" fill="#ff4757" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+      <button class="btn-back">back</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
